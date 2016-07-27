@@ -326,7 +326,11 @@ abstract class AbstractProvider implements ProviderContract
     protected function getHttpClient()
     {
         if (is_null($this->httpClient)) {
-            $this->httpClient = new Client();
+            if (env('SOCIALITE_CERTIFICATE')) {
+                $this->httpClient = new Client(['curl' => [CURLOPT_CAINFO => env('SSL_CERTIFICATE_PATH')]]);
+            } else {
+                $this->httpClient = new Client();
+            }
         }
 
         return $this->httpClient;
